@@ -2,8 +2,10 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e293b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Orar Grupa 232 · Semigrupa I</title>
     <style>
         :root {
@@ -12,6 +14,7 @@
             --card: rgba(255, 255, 255, 0.78);
             --card-solid: #ffffff;
             --border: rgba(148, 163, 184, 0.25);
+            --divider: rgba(100, 116, 139, 0.45);
             --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
             --curs: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
             --lab: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -19,6 +22,8 @@
             --header: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             --day-header: linear-gradient(135deg, #475569 0%, #64748b 100%);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --accent: #3b82f6;
         }
         [data-theme="dark"] {
             --bg-1: #0f172a; --bg-2: #1e293b; --bg-3: #0c1a2e;
@@ -26,14 +31,15 @@
             --card: rgba(30, 41, 59, 0.78);
             --card-solid: #1e293b;
             --border: rgba(148, 163, 184, 0.15);
+            --divider: rgba(148, 163, 184, 0.35);
             --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
             --header: linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
             --day-header: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         html, body { height: 100%; overflow: hidden; }
         body {
-            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             color: var(--text);
             background:
                 radial-gradient(circle at 15% 15%, var(--bg-3) 0%, transparent 45%),
@@ -41,7 +47,7 @@
                 var(--bg-2);
             padding: 12px 20px;
             display: flex; flex-direction: column; height: 100vh; gap: 10px;
-            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
         }
         .container {
             max-width: 1700px; margin: 0 auto; width: 100%;
@@ -116,13 +122,55 @@
             display: flex; overflow: hidden;
         }
 
-        /* ===== DESKTOP GRID ===== */
+        /* ===== DESKTOP — flex columns with day separators ===== */
         .grid {
-            display: grid;
-            grid-template-columns: 80px repeat(5, minmax(0, 1fr));
-            grid-template-rows: 40px repeat(6, minmax(0, 1fr));
-            gap: 7px; width: 100%; height: 100%;
+            display: flex;
+            gap: 7px;
+            width: 100%;
+            height: 100%;
         }
+        .col {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-height: 0;
+            position: relative;
+        }
+        .col.time-col {
+            width: 80px;
+            flex-shrink: 0;
+        }
+        .col.day-col {
+            flex: 1;
+            min-width: 0;
+        }
+        .col .cell.header {
+            flex: 0 0 40px;
+            height: 40px;
+        }
+        .col .cell:not(.header) {
+            flex: 1 1 0;
+            min-height: 0;
+        }
+        /* The separator line between day columns */
+        .col.day-col:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            bottom: 6px;
+            right: -4px;
+            width: 1px;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                var(--divider) 10%,
+                var(--divider) 90%,
+                transparent 100%
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .cell {
             background: var(--card-solid);
             border-radius: 11px; padding: 8px;
@@ -152,11 +200,8 @@
         .cell.empty { align-items: center; justify-content: center; }
         .cell.empty .dot-empty { opacity: 0.18; font-size: 16px; color: var(--text-soft); line-height: 1; }
 
-        /* ===== EVENT CARDS ===== */
         .event {
-            border-radius: 10px;
-            padding: 8px 11px;
-            color: #fff; line-height: 1.3;
+            border-radius: 10px; padding: 8px 11px; color: #fff; line-height: 1.3;
             box-shadow: 0 2px 8px rgba(0,0,0,0.14);
             position: relative; overflow: hidden; cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -197,18 +242,13 @@
             padding-left: 6px;
             display: flex; align-items: center; gap: 5px;
         }
-
         .cell.multi .event { padding: 5px 8px; gap: 2px; border-radius: 8px; }
-        .cell.multi .event .disciplina {
-            font-size: 11.5px; padding-left: 5px; line-height: 1.2;
-            -webkit-line-clamp: 1;
-        }
+        .cell.multi .event .disciplina { font-size: 11.5px; padding-left: 5px; line-height: 1.2; -webkit-line-clamp: 1; }
         .cell.multi .event .detalii { font-size: 10px; padding-left: 5px; gap: 3px; }
         .cell.multi .event .chip { padding: 1.5px 6px; font-size: 9.5px; gap: 3px; }
         .cell.multi .event .chip .ico { width: 9.5px; height: 9.5px; }
         .cell.multi .event .prof, .cell.multi .event .frecventa { display: none; }
 
-        /* ===== WHITE MONOCHROME ICONS ===== */
         .ico { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; vertical-align: middle; opacity: 0.95; }
         .chip .ico { width: 11px; height: 11px; }
         .prof .ico { width: 11px; height: 11px; opacity: 0.9; }
@@ -242,10 +282,8 @@
             border-radius: 16px; overflow: hidden;
             box-shadow: var(--shadow);
             display: flex; flex-direction: column;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         [data-theme="dark"] .disc-card { background: rgba(30, 41, 59, 0.75); }
-        .disc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(15,23,42,0.12); }
         .disc-header {
             background: var(--header); color: #fff;
             padding: 14px 18px;
@@ -281,10 +319,8 @@
             background: rgba(148, 163, 184, 0.08);
             margin-bottom: 5px;
             border-left: 3px solid transparent;
-            transition: background 0.2s ease;
         }
         .session-row:last-child { margin-bottom: 0; }
-        .session-row:hover { background: rgba(148, 163, 184, 0.15); }
         .session-row.tip-Curs { border-left-color: #3b82f6; }
         .session-row.tip-Laborator { border-left-color: #10b981; }
         .session-row.tip-Seminar { border-left-color: #f59e0b; }
@@ -323,7 +359,6 @@
             transition: transform 0.2s ease; font-size: 10px;
         }
         .other-groups[open] summary::before { transform: rotate(90deg); }
-        .other-groups summary:hover { color: var(--text); }
         .group-block { margin-top: 8px; padding-left: 6px; }
         .group-label {
             display: inline-block; font-size: 10.5px; font-weight: 700;
@@ -336,313 +371,279 @@
             padding: 5px 8px; font-size: 11px;
             background: transparent; border-left-width: 2px;
         }
-        .session-row.compact:hover { background: rgba(148, 163, 184, 0.1); }
         .session-row.compact .session-when { min-width: 80px; font-size: 10.5px; }
         .session-row.compact .session-chip { font-size: 9.5px; padding: 1px 6px; }
         .no-sessions { font-size: 12px; color: var(--text-soft); font-style: italic; padding: 8px 0; }
 
-        /* ===== MOBILE DAY VIEW (hidden on desktop) ===== */
         .mobile-view { display: none; }
 
-        /* ===== MOBILE RESPONSIVE ===== */
+        /* ===== MOBILE ===== */
         @media (max-width: 768px) {
-            body {
-                padding: 8px 8px calc(8px + var(--safe-bottom));
-                gap: 8px;
-            }
-            .container { gap: 8px; }
-
-            /* Compact topbar */
-            .topbar {
-                gap: 8px;
-                align-items: center;
-                flex-wrap: nowrap;
-            }
-            .brand { gap: 8px; flex: 1; min-width: 0; }
-            .badge { padding: 4px 10px; font-size: 10.5px; }
-            .badge .dot { width: 6px; height: 6px; }
-            h1 { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .legend { display: none; }
-            .theme-toggle { width: 36px; height: 36px; }
-            .theme-toggle svg { width: 16px; height: 16px; }
-
-            /* Tabs full-width, thumb-friendly */
-            .tabs {
-                width: 100%;
-                padding: 4px;
-                align-self: stretch;
-            }
-            .tab-btn {
-                flex: 1;
-                justify-content: center;
-                padding: 10px 8px;
-                font-size: 12.5px;
-                gap: 6px;
-            }
-            .tab-btn svg { width: 14px; height: 14px; }
-            .tab-btn .count { font-size: 10px; padding: 2px 6px; }
-
-            /* Timetable wrap becomes plain scroll container */
-            .timetable-wrap {
-                padding: 0;
-                border: none;
-                border-radius: 0;
-                background: transparent;
-                backdrop-filter: none;
-                -webkit-backdrop-filter: none;
-                box-shadow: none;
-                overflow: visible;
-            }
-
-            /* Hide desktop grid on mobile */
+            body { padding: 0; gap: 0; background: var(--bg-2); }
+            .container { gap: 0; max-width: 100%; }
+            .topbar, .tabs { display: none !important; }
             #timetable-container { display: none !important; }
-
-            /* Show mobile view */
-            .mobile-view {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                flex: 1;
-                min-height: 0;
-                gap: 8px;
+            .timetable-wrap {
+                padding: 0; border: none; border-radius: 0;
+                background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+                box-shadow: none; overflow: visible; flex: 1; min-height: 0;
             }
+            .tab-content.active { display: flex; flex-direction: column; min-height: 0; }
+            .mobile-view { display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; }
 
-            /* Day picker — horizontal scroll chips */
-            .day-picker {
-                display: flex;
-                gap: 6px;
-                overflow-x: auto;
-                padding: 2px 2px 4px;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
+            .mobile-header {
+                display: flex; align-items: center; gap: 10px;
+                padding: calc(12px + var(--safe-top)) 16px 12px;
+                background: var(--header); color: #fff;
+                position: relative; z-index: 10;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.15);
                 flex-shrink: 0;
+            }
+            .mobile-header .mh-title {
+                font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
+                flex: 1; min-width: 0;
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            }
+            .mobile-header .mh-title span {
+                background: linear-gradient(135deg, #93c5fd 0%, #c4b5fd 50%, #f9a8d4 100%);
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .mobile-header .mh-sub {
+                font-size: 10.5px; font-weight: 600; opacity: 0.75;
+                letter-spacing: 0.04em; text-transform: uppercase;
+            }
+            .mobile-header .mh-actions { display: flex; gap: 6px; flex-shrink: 0; }
+            .mh-btn {
+                width: 34px; height: 34px; border-radius: 50%;
+                background: rgba(255,255,255,0.14); border: none; color: #fff;
+                cursor: pointer; display: flex; align-items: center; justify-content: center;
+                transition: background 0.2s ease, transform 0.15s ease;
+            }
+            .mh-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.24); }
+            .mh-btn svg { width: 16px; height: 16px; }
+            .mh-btn.today-pill {
+                width: auto; border-radius: 100px; padding: 0 12px;
+                font-family: inherit; font-size: 11.5px; font-weight: 700;
+                letter-spacing: 0.02em; text-transform: uppercase;
+                gap: 5px; height: 34px;
+            }
+            .mh-btn.today-pill svg { width: 12px; height: 12px; }
+
+            .day-picker-shell {
+                background: var(--card-solid);
+                border-bottom: 1px solid var(--border);
+                position: relative; z-index: 9;
+                flex-shrink: 0;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            }
+            [data-theme="dark"] .day-picker-shell { background: rgba(30, 41, 59, 0.95); }
+            .day-picker {
+                display: flex; gap: 6px; overflow-x: auto;
+                padding: 10px 12px;
+                scrollbar-width: none; -ms-overflow-style: none;
+                scroll-snap-type: x proximity;
             }
             .day-picker::-webkit-scrollbar { display: none; }
             .day-chip {
-                flex-shrink: 0;
-                background: var(--card);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border: 1px solid var(--border);
-                color: var(--text-soft);
-                font-family: inherit;
-                font-size: 13px;
-                font-weight: 700;
-                padding: 9px 16px;
-                border-radius: 10px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                letter-spacing: 0.02em;
-                text-transform: capitalize;
+                flex-shrink: 0; background: transparent;
+                border: 1.5px solid var(--border); color: var(--text-soft);
+                font-family: inherit; font-size: 13px; font-weight: 700;
+                padding: 8px 14px; border-radius: 100px;
+                cursor: pointer; transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+                display: flex; align-items: center; gap: 6px;
+                letter-spacing: 0.01em; scroll-snap-align: start;
+                position: relative;
             }
-            .day-chip:hover { color: var(--text); }
+            .day-chip:active { transform: scale(0.96); }
             .day-chip.active {
-                background: var(--header);
-                color: #fff;
+                background: var(--header); color: #fff;
                 border-color: transparent;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+                box-shadow: 0 4px 12px rgba(15,23,42,0.18);
             }
             .day-chip .day-count {
                 font-size: 10px;
-                background: rgba(59, 130, 246, 0.18);
-                color: #3b82f6;
-                padding: 1px 6px;
-                border-radius: 100px;
-                font-weight: 700;
-                line-height: 1.4;
+                background: rgba(59, 130, 246, 0.15); color: var(--accent);
+                padding: 1px 6px; border-radius: 100px;
+                font-weight: 700; line-height: 1.5;
+                min-width: 18px; text-align: center;
             }
-            .day-chip.active .day-count {
-                background: rgba(255,255,255,0.22);
-                color: #fff;
-            }
-
-            /* Day scroll area */
-            .day-scroll {
-                flex: 1;
-                min-height: 0;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                padding-bottom: 8px;
-            }
-            .day-scroll::-webkit-scrollbar { width: 4px; }
-            .day-scroll::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 4px; }
-
-            /* Slot row */
-            .mobile-slot {
-                display: flex;
-                gap: 10px;
-                align-items: stretch;
-            }
-            .mobile-slot-time {
-                flex-shrink: 0;
-                width: 62px;
-                background: var(--header);
-                color: #fff;
-                font-weight: 700;
-                font-size: 12px;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                letter-spacing: 0.02em;
-                padding: 10px 4px;
-                font-family: 'SF Mono', 'Consolas', monospace;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-                align-self: flex-start;
-            }
-            .mobile-slot-events {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-                min-width: 0;
-            }
-            /* Empty slot — compact and faded */
-            .mobile-slot.empty .mobile-slot-time {
-                background: var(--card);
-                color: var(--text-soft);
-                opacity: 0.55;
-                box-shadow: none;
-                border: 1px dashed var(--border);
-                font-size: 11px;
-            }
-            .mobile-slot.empty .mobile-empty-label {
-                font-size: 11.5px;
-                color: var(--text-soft);
-                font-style: italic;
-                padding: 8px 2px;
-                opacity: 0.65;
-            }
-
-            /* Mobile event card — full-width, comfortable */
-            .mobile-event {
-                border-radius: 12px;
-                padding: 12px 14px;
-                color: #fff;
-                line-height: 1.3;
-                box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-                position: relative;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-                cursor: pointer;
-                transition: transform 0.15s ease;
-            }
-            .mobile-event:active { transform: scale(0.98); }
-            .mobile-event::before {
+            .day-chip.active .day-count { background: rgba(255,255,255,0.24); color: #fff; }
+            .day-chip.is-today:not(.active) { border-color: var(--accent); color: var(--accent); }
+            .day-chip.is-today:not(.active) .day-count { background: rgba(59, 130, 246, 0.2); }
+            .day-chip.is-today::after {
                 content: '';
-                position: absolute;
-                top: 0; left: 0;
-                width: 4px; height: 100%;
-                background: rgba(255,255,255,0.55);
+                position: absolute; top: -2px; right: -2px;
+                width: 8px; height: 8px; background: #10b981;
+                border-radius: 50%;
+                border: 2px solid var(--card-solid);
+                box-shadow: 0 0 8px rgba(16,185,129,0.6);
             }
-            .mobile-event .disciplina {
-                font-weight: 700;
-                font-size: 14.5px;
-                padding-left: 6px;
-                line-height: 1.25;
-                letter-spacing: -0.01em;
+            [data-theme="dark"] .day-chip.is-today::after { border-color: #1e293b; }
+
+            .day-scroll {
+                flex: 1; min-height: 0;
+                overflow-y: auto; -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+                padding: 12px 12px calc(16px + var(--safe-bottom));
+                display: flex; flex-direction: column; gap: 0;
+                position: relative;
             }
-            .mobile-event .detalii {
-                font-size: 12px;
-                padding-left: 6px;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
+            .day-scroll::-webkit-scrollbar { width: 0; }
+
+            .day-summary {
+                display: flex; align-items: center; justify-content: space-between;
+                padding: 0 4px 12px; flex-shrink: 0;
             }
-            .mobile-event .chip {
-                display: inline-flex;
-                align-items: center;
-                gap: 5px;
-                background: rgba(255,255,255,0.22);
-                padding: 4px 10px;
-                border-radius: 7px;
-                font-size: 11.5px;
-                font-weight: 700;
-                white-space: nowrap;
+            .day-summary .ds-title {
+                font-size: 20px; font-weight: 800; letter-spacing: -0.02em;
+                color: var(--text);
+            }
+            .day-summary .ds-title .ds-num {
+                font-size: 13px; font-weight: 600; color: var(--text-soft);
+                margin-left: 6px; letter-spacing: 0;
+            }
+            .day-summary .ds-meta {
+                font-size: 11px; font-weight: 700; color: var(--text-soft);
+                background: var(--card); padding: 4px 10px; border-radius: 100px;
+                border: 1px solid var(--border);
+                letter-spacing: 0.04em; text-transform: uppercase;
+            }
+
+            .timeline { display: flex; flex-direction: column; gap: 10px; position: relative; }
+            .tl-row {
+                display: grid; grid-template-columns: 58px 1fr; gap: 12px;
+                align-items: stretch; position: relative;
+            }
+            .tl-time {
+                display: flex; flex-direction: column; align-items: center;
+                padding-top: 14px; position: relative;
+            }
+            .tl-time .t-start {
+                font-size: 14px; font-weight: 800; letter-spacing: -0.02em;
+                color: var(--text); font-variant-numeric: tabular-nums; line-height: 1;
+            }
+            .tl-time .t-end {
+                font-size: 10.5px; font-weight: 600; color: var(--text-soft);
+                font-variant-numeric: tabular-nums; margin-top: 3px; line-height: 1;
+            }
+            .tl-content { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+            .m-card {
+                border-radius: 14px; padding: 12px 14px; color: #fff; line-height: 1.3;
+                position: relative; overflow: hidden;
+                display: flex; flex-direction: column; gap: 6px;
+                box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+                transition: transform 0.15s ease, box-shadow 0.2s ease;
+                cursor: pointer; isolation: isolate;
+            }
+            .m-card:active { transform: scale(0.985); }
+            .m-card::before {
+                content: ''; position: absolute; top: 0; left: 0;
+                width: 4px; height: 100%; background: rgba(255,255,255,0.5);
+                z-index: 1;
+            }
+            .m-card .m-type-row { display: flex; align-items: center; gap: 8px; padding-left: 6px; }
+            .m-card .m-type {
+                font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em;
+                text-transform: uppercase;
+                background: rgba(255,255,255,0.24);
+                padding: 3px 8px; border-radius: 5px;
                 backdrop-filter: blur(4px);
             }
-            .mobile-event .chip .ico { width: 12px; height: 12px; }
-            .mobile-event .prof {
-                padding-left: 6px;
-                font-size: 12px;
-                font-weight: 500;
-                opacity: 0.96;
-                display: flex;
-                align-items: center;
-                gap: 6px;
+            .m-card .m-frec { font-size: 10.5px; font-weight: 700; opacity: 0.9; font-style: italic; }
+            .m-card .m-disc {
+                font-size: 15px; font-weight: 700; padding-left: 6px;
+                line-height: 1.25; letter-spacing: -0.01em;
+            }
+            .m-card .m-meta {
+                display: flex; flex-wrap: wrap; gap: 8px;
+                padding-left: 6px; font-size: 12px;
+                font-weight: 500; opacity: 0.96;
+            }
+            .m-card .m-meta-item { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+            .m-card .m-meta-item .ico { width: 13px; height: 13px; opacity: 0.95; }
+            .m-card .m-teacher {
+                padding-left: 6px; font-size: 12px; font-weight: 500;
+                opacity: 0.94; display: flex; align-items: center; gap: 6px;
                 line-height: 1.35;
             }
-            .mobile-event .prof .ico { width: 12px; height: 12px; opacity: 0.9; }
-            .mobile-event .frecventa {
-                padding-left: 6px;
-                font-size: 11.5px;
-                font-style: italic;
-                opacity: 0.9;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .mobile-event .frecventa .ico { width: 11px; height: 11px; opacity: 0.9; }
+            .m-card .m-teacher .ico { width: 13px; height: 13px; opacity: 0.9; }
 
-            /* Discipline tab mobile */
-            .discipline-scroll { padding-right: 0; padding-bottom: 4px; }
-            .info-banner { padding: 10px 14px; font-size: 12px; margin-bottom: 12px; }
+            .empty-day {
+                display: flex; flex-direction: column; align-items: center;
+                justify-content: center; text-align: center;
+                padding: 60px 30px; gap: 14px;
+            }
+            .empty-day .ed-icon {
+                width: 64px; height: 64px; border-radius: 50%;
+                background: var(--card); border: 1px solid var(--border);
+                display: flex; align-items: center; justify-content: center;
+                font-size: 26px; color: var(--text-soft);
+                box-shadow: var(--shadow);
+            }
+            .empty-day .ed-title { font-size: 16px; font-weight: 700; color: var(--text); }
+            .empty-day .ed-desc {
+                font-size: 13px; color: var(--text-soft);
+                line-height: 1.5; max-width: 240px;
+            }
+
+            .discipline-scroll { padding: 12px 12px calc(16px + var(--safe-bottom)); }
+            .info-banner { padding: 12px 14px; font-size: 12.5px; margin-bottom: 12px; border-radius: 12px; }
             .info-banner .ico { width: 16px; height: 16px; }
-            .discipline-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
+            .discipline-grid { grid-template-columns: 1fr; gap: 12px; }
             .disc-card { border-radius: 14px; }
-            .disc-header { padding: 12px 14px; }
+            .disc-header { padding: 14px 16px; }
             .disc-code { font-size: 10px; padding: 3px 8px; }
-            .disc-name { font-size: 14px; }
-            .disc-count { font-size: 10px; padding: 3px 8px; }
-            .disc-body { padding: 12px 14px; gap: 10px; }
-
-            .session-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 6px;
-                padding: 10px 12px;
-            }
-            .session-when {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                min-width: 0;
-            }
+            .disc-name { font-size: 14.5px; }
+            .disc-count { font-size: 10px; padding: 3px 9px; }
+            .disc-body { padding: 14px 16px; gap: 10px; }
+            .session-row { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 12px; }
+            .session-when { display: flex; align-items: center; gap: 8px; min-width: 0; }
             .session-when .day { font-size: 11px; }
             .session-when .time { font-size: 13px; }
             .session-details { gap: 5px; }
             .session-chip { font-size: 11px; padding: 3px 8px; }
             .session-teacher { font-size: 11.5px; }
-            .session-row.compact {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 8px 10px;
-                gap: 5px;
-            }
+            .session-row.compact { flex-direction: column; align-items: stretch; padding: 8px 10px; gap: 5px; }
             .session-row.compact .session-when { min-width: 0; }
             .other-groups summary { font-size: 12px; padding: 8px 0; }
             .group-label { font-size: 11px; padding: 3px 9px; }
+
+            .mobile-fab-tabs {
+                position: fixed; bottom: calc(16px + var(--safe-bottom));
+                left: 50%; transform: translateX(-50%);
+                z-index: 50;
+                display: flex; gap: 4px;
+                background: var(--header);
+                padding: 5px; border-radius: 100px;
+                box-shadow: 0 8px 30px rgba(15,23,42,0.35);
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+            .mobile-fab-tabs button {
+                background: transparent; border: none; color: rgba(255,255,255,0.6);
+                font-family: inherit; font-size: 12px; font-weight: 700;
+                padding: 8px 16px; border-radius: 100px; cursor: pointer;
+                display: flex; align-items: center; gap: 6px;
+                transition: all 0.2s ease; letter-spacing: 0.02em;
+            }
+            .mobile-fab-tabs button.active {
+                background: rgba(255,255,255,0.14); color: #fff;
+            }
+            .mobile-fab-tabs button svg { width: 13px; height: 13px; }
         }
 
-        /* Very small phones */
+        @media (min-width: 769px) {
+            .mobile-view { display: none !important; }
+            .mobile-fab-tabs { display: none !important; }
+        }
+
         @media (max-width: 380px) {
-            h1 { font-size: 14px; }
-            .badge { font-size: 10px; padding: 3px 9px; }
-            .tab-btn { font-size: 11.5px; padding: 9px 6px; }
-            .mobile-slot-time { width: 56px; font-size: 11px; }
-            .mobile-event { padding: 10px 12px; }
-            .mobile-event .disciplina { font-size: 13.5px; }
+            .tl-row { grid-template-columns: 50px 1fr; gap: 10px; }
+            .tl-time .t-start { font-size: 13px; }
+            .m-card { padding: 10px 12px; }
+            .m-card .m-disc { font-size: 14px; }
+            .m-card .m-meta { font-size: 11.5px; }
         }
 
         @keyframes fadeUp {
@@ -651,7 +652,8 @@
         }
         .event { animation: fadeUp 0.3s ease backwards; }
         .disc-card { animation: fadeUp 0.35s ease backwards; }
-        .mobile-event { animation: fadeUp 0.25s ease backwards; }
+        .m-card { animation: fadeUp 0.28s ease backwards; }
+        .tl-row { animation: fadeUp 0.3s ease backwards; }
     </style>
 </head>
 <body>
@@ -675,11 +677,11 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="orar" onclick="switchTab('orar')">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
-                Orar
+                Orar săptămânal
             </button>
             <button class="tab-btn" data-tab="discipline" onclick="switchTab('discipline')">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z"/></svg>
-                Discipline
+                Disciplinele mele
                 <span class="count" id="disc-count">7</span>
             </button>
         </div>
@@ -688,9 +690,27 @@
             <div class="timetable-wrap">
                 <div id="timetable-container"></div>
 
-                <!-- Mobile day view -->
                 <div class="mobile-view">
-                    <div class="day-picker" id="day-picker"></div>
+                    <div class="mobile-header">
+                        <div>
+                            <div class="mh-title"><span>Orar</span> · Semigrupa I</div>
+                            <div class="mh-sub">Grupa 232</div>
+                        </div>
+                        <div class="mh-actions">
+                            <button class="mh-btn today-pill" onclick="jumpToToday()" title="Mergi la ziua de azi">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                Azi
+                            </button>
+                            <button class="mh-btn" onclick="toggleTheme()" title="Comută tema">
+                                <span id="theme-icon-mobile"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="day-picker-shell">
+                        <div class="day-picker" id="day-picker"></div>
+                    </div>
+
                     <div class="day-scroll" id="day-scroll"></div>
                 </div>
             </div>
@@ -701,13 +721,24 @@
                 <div class="info-banner">
                     <svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
                     <div>
-                        <strong>Disciplinele tale (MLR5023, MLR7001, MLR5077, MLR5078, MLR5067, MLR5012, MLE5153).</strong>
+                        <strong>Disciplinele tale.</strong>
                         Sesiunile din grupa ta (232), semigrupa ta (232/1) și seria ta (I3). Secțiunea „Rulează și pentru alte grupe” arată unde se ține și pentru colegii din alte grupe (util pentru recuperări).
                     </div>
                 </div>
                 <div class="discipline-grid" id="discipline-grid"></div>
             </div>
         </div>
+    </div>
+
+    <div class="mobile-fab-tabs" id="mobile-fab-tabs">
+        <button class="active" data-tab="orar" onclick="switchTab('orar')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+            Orar
+        </button>
+        <button data-tab="discipline" onclick="switchTab('discipline')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z"/></svg>
+            Discipline
+        </button>
     </div>
 
     <script>
@@ -717,11 +748,14 @@
             user: '<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>',
             calendar: '<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>',
             sun: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-            moon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+            moon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+            coffee: '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>'
         };
 
         function setThemeIcon(theme) {
-            document.getElementById('theme-icon').innerHTML = theme === 'dark' ? ICON.sun : ICON.moon;
+            const html = theme === 'dark' ? ICON.sun : ICON.moon;
+            const a = document.getElementById('theme-icon'); if (a) a.innerHTML = html;
+            const b = document.getElementById('theme-icon-mobile'); if (b) b.innerHTML = html;
         }
         function toggleTheme() {
             const html = document.documentElement;
@@ -729,7 +763,6 @@
             html.setAttribute('data-theme', next);
             setThemeIcon(next);
             localStorage.setItem('theme', next);
-            // Update theme-color meta for mobile browsers
             const meta = document.querySelector('meta[name="theme-color"]');
             if (meta) meta.setAttribute('content', next === 'dark' ? '#0b1220' : '#1e293b');
         }
@@ -737,10 +770,13 @@
             const saved = localStorage.getItem('theme') || 'light';
             if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
             setThemeIcon(saved);
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', saved === 'dark' ? '#0b1220' : '#1e293b');
         })();
 
         function switchTab(name) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+            document.querySelectorAll('.mobile-fab-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
         }
 
@@ -901,15 +937,23 @@
         ];
         const getStartHour = ore => parseInt(ore.split('-')[0], 10);
 
-        // ===== DESKTOP GRID =====
+        // ===== DESKTOP =====
         function renderDesktopTimetable() {
             let html = '<div class="grid">';
-            html += '<div class="cell header corner">Ora</div>';
-            zile.forEach(z => html += `<div class="cell header">${z.label}</div>`);
 
+            // Time column
+            html += '<div class="col time-col">';
+            html += '<div class="cell header corner">Ora</div>';
             sloturi.forEach(slot => {
                 html += `<div class="cell time"><span class="time-label">${slot.label}</span></div>`;
-                zile.forEach(z => {
+            });
+            html += '</div>';
+
+            // Day columns
+            zile.forEach(z => {
+                html += '<div class="col day-col">';
+                html += `<div class="cell header">${z.label}</div>`;
+                sloturi.forEach(slot => {
                     const events = evenimente.filter(e => e.zi === z.key && getStartHour(e.ore) === slot.start);
                     if (events.length === 0) {
                         html += '<div class="cell empty"><span class="dot-empty">·</span></div>';
@@ -933,26 +977,32 @@
                         html += '</div>';
                     }
                 });
+                html += '</div>';
             });
+
             html += '</div>';
             document.getElementById('timetable-container').innerHTML = html;
         }
 
-        // ===== MOBILE DAY VIEW =====
-        let selectedDay = (function() {
-            // Default to today if it's Mon-Fri, else Monday
+        // ===== MOBILE =====
+        const todayKey = (function() {
             const map = { 1: "Luni", 2: "Marti", 3: "Miercuri", 4: "Joi", 5: "Vineri" };
-            const today = new Date().getDay();
+            return map[new Date().getDay()] || null;
+        })();
+
+        let selectedDay = (function() {
             const saved = localStorage.getItem('selectedDay');
             if (saved && zile.some(z => z.key === saved)) return saved;
-            return map[today] || "Luni";
+            return todayKey || "Luni";
         })();
 
         function renderDayPicker() {
             const picker = document.getElementById('day-picker');
+            if (!picker) return;
             picker.innerHTML = zile.map(z => {
                 const count = evenimente.filter(e => e.zi === z.key).length;
-                return `<button class="day-chip ${z.key === selectedDay ? 'active' : ''}" data-day="${z.key}" onclick="selectDay('${z.key}')">
+                const isToday = z.key === todayKey;
+                return `<button class="day-chip ${z.key === selectedDay ? 'active' : ''} ${isToday ? 'is-today' : ''}" data-day="${z.key}" onclick="selectDay('${z.key}')">
                     ${z.label}
                     <span class="day-count">${count}</span>
                 </button>`;
@@ -961,38 +1011,58 @@
 
         function renderDayView() {
             const scroll = document.getElementById('day-scroll');
-            let html = '';
-            let hasAnyEvent = false;
+            if (!scroll) return;
 
+            const dayEvents = evenimente.filter(e => e.zi === selectedDay);
+            const totalSessions = dayEvents.length;
+
+            let html = '';
+            const dayLabel = zile.find(z => z.key === selectedDay)?.label || selectedDay;
+            html += `<div class="day-summary">
+                <div class="ds-title">${dayLabel}<span class="ds-num">${totalSessions} ${totalSessions === 1 ? 'sesiune' : 'sesiuni'}</span></div>
+                <div class="ds-meta">Semigrupa I</div>
+            </div>`;
+
+            if (totalSessions === 0) {
+                html += `<div class="empty-day">
+                    <div class="ed-icon">${ICON.coffee}</div>
+                    <div class="ed-title">Zi liberă</div>
+                    <div class="ed-desc">Nu ai nicio activitate programată în această zi. Bucură-te de pauză!</div>
+                </div>`;
+                scroll.innerHTML = html;
+                return;
+            }
+
+            html += '<div class="timeline">';
             sloturi.forEach(slot => {
                 const events = evenimente.filter(e => e.zi === selectedDay && getStartHour(e.ore) === slot.start);
-                if (events.length === 0) {
-                    html += `<div class="mobile-slot empty">
-                        <div class="mobile-slot-time">${slot.label}</div>
-                        <div class="mobile-empty-label">— liber —</div>
-                    </div>`;
-                } else {
-                    hasAnyEvent = true;
-                    html += `<div class="mobile-slot">`;
-                    html += `<div class="mobile-slot-time">${slot.label}</div>`;
-                    html += `<div class="mobile-slot-events">`;
-                    events.forEach((e, i) => {
-                        const delay = (i * 0.04).toFixed(2);
-                        html += `<div class="mobile-event ${e.tip}" style="animation-delay: ${delay}s">`;
-                        html += `<div class="disciplina">${e.disciplina}</div>`;
-                        html += `<div class="detalii">`;
-                        html += `<span class="chip">${e.tip}</span>`;
-                        html += `<span class="chip">${ICON.pin}${e.sala}</span>`;
-                        html += `<span class="chip">${ICON.group}${e.formatie}</span>`;
-                        if (e.frec) html += `<span class="chip">${ICON.calendar}${e.frec}</span>`;
-                        html += `</div>`;
-                        html += `<div class="prof">${ICON.user}<span>${e.cadru}</span></div>`;
-                        html += `</div>`;
-                    });
+                if (events.length === 0) return;
+
+                html += `<div class="tl-row">`;
+                html += `<div class="tl-time">
+                    <span class="t-start">${slot.label.split('–')[0]}</span>
+                    <span class="t-end">${slot.label.split('–')[1]}</span>
+                </div>`;
+                html += `<div class="tl-content">`;
+                events.forEach((e, i) => {
+                    const delay = (i * 0.04).toFixed(2);
+                    html += `<div class="m-card ${e.tip}" style="animation-delay: ${delay}s">`;
+                    html += `<div class="m-type-row">`;
+                    html += `<span class="m-type">${e.tip}</span>`;
+                    if (e.frec) html += `<span class="m-frec">${e.frec}</span>`;
                     html += `</div>`;
+                    html += `<div class="m-disc">${e.disciplina}</div>`;
+                    html += `<div class="m-meta">`;
+                    html += `<span class="m-meta-item">${ICON.pin}${e.sala}</span>`;
+                    html += `<span class="m-meta-item">${ICON.group}${e.formatie}</span>`;
                     html += `</div>`;
-                }
+                    html += `<div class="m-teacher">${ICON.user}<span>${e.cadru}</span></div>`;
+                    html += `</div>`;
+                });
+                html += `</div>`;
+                html += `</div>`;
             });
+            html += '</div>';
 
             scroll.innerHTML = html;
         }
@@ -1002,10 +1072,39 @@
             localStorage.setItem('selectedDay', day);
             renderDayPicker();
             renderDayView();
-            // Smooth scroll to top of day view
             const scroll = document.getElementById('day-scroll');
             if (scroll) scroll.scrollTop = 0;
         }
+
+        function jumpToToday() {
+            if (todayKey) {
+                selectDay(todayKey);
+            } else {
+                selectDay("Luni");
+            }
+        }
+
+        (function setupSwipe() {
+            const scroll = document.getElementById('day-scroll');
+            if (!scroll) return;
+            let startX = 0, startY = 0, startT = 0;
+            scroll.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                startT = Date.now();
+            }, { passive: true });
+            scroll.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - startX;
+                const dy = e.changedTouches[0].clientY - startY;
+                const dt = Date.now() - startT;
+                if (dt > 500) return;
+                if (Math.abs(dx) < 60) return;
+                if (Math.abs(dy) > Math.abs(dx) * 0.7) return;
+                const idx = zile.findIndex(z => z.key === selectedDay);
+                if (dx < 0 && idx < zile.length - 1) selectDay(zile[idx + 1].key);
+                else if (dx > 0 && idx > 0) selectDay(zile[idx - 1].key);
+            }, { passive: true });
+        })();
 
         // ===== DISCIPLINE TAB =====
         function renderDiscipline() {
@@ -1067,23 +1166,25 @@
                 html += `</div>`;
             });
             grid.innerHTML = html;
-            document.getElementById('disc-count').textContent = disciplineMele.length;
+            const cnt = document.getElementById('disc-count');
+            if (cnt) cnt.textContent = disciplineMele.length;
         }
 
-        // ===== INIT =====
         renderDesktopTimetable();
         renderDayPicker();
         renderDayView();
         renderDiscipline();
 
-        // Re-render on resize (simple approach — desktop grid is CSS-hidden on mobile anyway)
-        let resizeTimer;
+        let wasMobile = window.innerWidth <= 768;
         window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                // Nothing needed — CSS handles show/hide, but this hook is here
-                // if you later want to conditionally render for perf.
-            }, 200);
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile !== wasMobile) {
+                wasMobile = isMobile;
+                if (isMobile) {
+                    renderDayPicker();
+                    renderDayView();
+                }
+            }
         });
     </script>
 </body>
