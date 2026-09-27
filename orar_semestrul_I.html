@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1e293b">
+    <title>Orar Grupa 232 · Semigrupa I</title>
+    <style>
+        :root {
+            --bg-1: #eef2ff; --bg-2: #f8fafc; --bg-3: #e0f2fe;
+            --text: #0f172a; --text-soft: #64748b;
+            --card: rgba(255, 255, 255, 0.78);
+            --card-solid: #ffffff;
+            --border: rgba(148, 163, 184, 0.25);
+            --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+            --curs: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --lab: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --sem: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            --header: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --day-header: linear-gradient(135deg, #475569 0%, #64748b 100%);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        [data-theme="dark"] {
+            --bg-1: #0f172a; --bg-2: #1e293b; --bg-3: #0c1a2e;
+            --text: #f1f5f9; --text-soft: #94a3b8;
+            --card: rgba(30, 41, 59, 0.78);
+            --card-solid: #1e293b;
+            --border: rgba(148, 163, 184, 0.15);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+            --header: linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
+            --day-header: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; overflow: hidden; }
+        body {
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 15% 15%, var(--bg-3) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, var(--bg-1) 0%, transparent 45%),
+                var(--bg-2);
+            padding: 12px 20px;
+            display: flex; flex-direction: column; height: 100vh; gap: 10px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .container {
+            max-width: 1700px; margin: 0 auto; width: 100%;
+            display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 10px;
+        }
+        .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); padding: 6px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; color: var(--text-soft);
+        }
+        .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        h1 {
+            font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; line-height: 1.1;
+        }
+        .legend { display: flex; gap: 8px; flex-wrap: wrap; }
+        .legend-item {
+            display: flex; align-items: center; gap: 7px;
+            background: var(--card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); padding: 7px 14px; border-radius: 100px;
+            font-size: 12.5px; font-weight: 600; color: var(--text); box-shadow: var(--shadow);
+        }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+        .legend-color.curs { background: var(--curs); }
+        .legend-color.laborator { background: var(--lab); }
+        .legend-color.seminar { background: var(--sem); }
+        .theme-toggle {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); box-shadow: var(--shadow); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text); transition: all 0.3s ease; flex-shrink: 0;
+        }
+        .theme-toggle:hover { transform: scale(1.08) rotate(12deg); }
+        .theme-toggle svg { width: 18px; height: 18px; }
+
+        .tabs {
+            display: flex; gap: 6px;
+            background: var(--card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); padding: 5px; border-radius: 12px;
+            box-shadow: var(--shadow); align-self: flex-start;
+        }
+        .tab-btn {
+            background: transparent; border: none; padding: 9px 18px;
+            font-family: inherit; font-size: 13px; font-weight: 600;
+            color: var(--text-soft); cursor: pointer; border-radius: 8px;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .tab-btn:hover { color: var(--text); background: rgba(59, 130, 246, 0.08); }
+        .tab-btn.active { background: var(--header); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .tab-btn svg { width: 15px; height: 15px; }
+        .tab-btn .count {
+            background: rgba(59, 130, 246, 0.18); color: #3b82f6;
+            font-size: 10.5px; font-weight: 700; padding: 2px 7px;
+            border-radius: 100px; line-height: 1;
+        }
+        .tab-btn.active .count { background: rgba(255,255,255,0.22); color: #fff; }
+        .tab-content { display: none; flex: 1; min-height: 0; }
+        .tab-content.active { display: flex; flex-direction: column; }
+
+        .timetable-wrap {
+            background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 16px; padding: 10px;
+            box-shadow: var(--shadow); flex: 1; min-height: 0;
+            display: flex; overflow: hidden;
+        }
+
+        /* ===== DESKTOP GRID ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: 80px repeat(5, minmax(0, 1fr));
+            grid-template-rows: 40px repeat(6, minmax(0, 1fr));
+            gap: 7px; width: 100%; height: 100%;
+        }
+        .cell {
+            background: var(--card-solid);
+            border-radius: 11px; padding: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            overflow: hidden;
+            min-width: 0; min-height: 0;
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        [data-theme="dark"] .cell { background: rgba(30, 41, 59, 0.7); }
+        .cell.header {
+            background: var(--day-header); color: #fff;
+            font-size: 13px; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; padding: 0;
+        }
+        .cell.header.corner { background: var(--header); }
+        .cell.time {
+            background: var(--header); color: #fff; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; padding: 4px;
+        }
+        .cell.time .time-label {
+            display: inline-block; padding: 6px 10px;
+            background: rgba(255,255,255,0.16); border-radius: 7px;
+            letter-spacing: 0.02em; white-space: nowrap;
+            font-size: 13px; font-weight: 700;
+        }
+        .cell.empty { align-items: center; justify-content: center; }
+        .cell.empty .dot-empty { opacity: 0.18; font-size: 16px; color: var(--text-soft); line-height: 1; }
+
+        /* ===== EVENT CARDS ===== */
+        .event {
+            border-radius: 10px;
+            padding: 8px 11px;
+            color: #fff; line-height: 1.3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.14);
+            position: relative; overflow: hidden; cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex: 1 1 0; min-height: 0;
+            display: flex; flex-direction: column; justify-content: center; gap: 4px;
+        }
+        .event::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: rgba(255,255,255,0.55);
+        }
+        .event:hover { transform: scale(1.03); box-shadow: 0 8px 22px rgba(0,0,0,0.3); z-index: 10; }
+        .event .disciplina {
+            font-weight: 700; font-size: 14px; padding-left: 6px;
+            line-height: 1.25; letter-spacing: -0.005em;
+            overflow: hidden;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+        }
+        .event .detalii {
+            font-size: 11.5px; padding-left: 6px;
+            display: flex; flex-wrap: wrap; gap: 5px;
+        }
+        .event .chip {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.22);
+            padding: 3px 8px; border-radius: 6px;
+            font-size: 11px; font-weight: 700;
+            white-space: nowrap; backdrop-filter: blur(4px);
+            letter-spacing: 0.01em;
+        }
+        .event .prof {
+            padding-left: 6px; font-size: 11.5px; font-weight: 500;
+            opacity: 0.98; line-height: 1.3;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .event .frecventa {
+            font-style: italic; font-size: 11px; opacity: 0.92;
+            padding-left: 6px;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .cell.multi .event { padding: 5px 8px; gap: 2px; border-radius: 8px; }
+        .cell.multi .event .disciplina {
+            font-size: 11.5px; padding-left: 5px; line-height: 1.2;
+            -webkit-line-clamp: 1;
+        }
+        .cell.multi .event .detalii { font-size: 10px; padding-left: 5px; gap: 3px; }
+        .cell.multi .event .chip { padding: 1.5px 6px; font-size: 9.5px; gap: 3px; }
+        .cell.multi .event .chip .ico { width: 9.5px; height: 9.5px; }
+        .cell.multi .event .prof, .cell.multi .event .frecventa { display: none; }
+
+        /* ===== WHITE MONOCHROME ICONS ===== */
+        .ico { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; vertical-align: middle; opacity: 0.95; }
+        .chip .ico { width: 11px; height: 11px; }
+        .prof .ico { width: 11px; height: 11px; opacity: 0.9; }
+        .frecventa .ico { width: 10.5px; height: 10.5px; opacity: 0.9; }
+
+        .Curs { background: var(--curs); }
+        .Laborator { background: var(--lab); }
+        .Seminar { background: var(--sem); }
+
+        /* ===== DISCIPLINE TAB ===== */
+        .discipline-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-right: 6px; }
+        .discipline-scroll::-webkit-scrollbar { width: 8px; }
+        .discipline-scroll::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.4); border-radius: 8px; }
+        .info-banner {
+            background: var(--card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); border-left: 4px solid #3b82f6;
+            border-radius: 12px; padding: 12px 18px; margin-bottom: 16px;
+            font-size: 13px; color: var(--text); line-height: 1.5;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .info-banner .ico { width: 18px; height: 18px; opacity: 1; color: #3b82f6; margin-top: 1px; flex-shrink: 0; }
+        .info-banner strong { color: #3b82f6; }
+        .discipline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: 14px;
+        }
+        .disc-card {
+            background: var(--card-solid);
+            border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex; flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        [data-theme="dark"] .disc-card { background: rgba(30, 41, 59, 0.75); }
+        .disc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(15,23,42,0.12); }
+        .disc-header {
+            background: var(--header); color: #fff;
+            padding: 14px 18px;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        }
+        .disc-header-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .disc-code {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 11px; font-weight: 700;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 9px; border-radius: 5px;
+            letter-spacing: 0.05em; align-self: flex-start;
+        }
+        .disc-name { font-size: 15px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+        .disc-count {
+            font-size: 11px; font-weight: 700;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px; border-radius: 100px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .disc-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 12px; }
+        .disc-section-title {
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            color: var(--text-soft);
+            display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+        }
+        .disc-section-title .dot-me { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
+        .session-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 10px; border-radius: 8px;
+            font-size: 12px;
+            background: rgba(148, 163, 184, 0.08);
+            margin-bottom: 5px;
+            border-left: 3px solid transparent;
+            transition: background 0.2s ease;
+        }
+        .session-row:last-child { margin-bottom: 0; }
+        .session-row:hover { background: rgba(148, 163, 184, 0.15); }
+        .session-row.tip-Curs { border-left-color: #3b82f6; }
+        .session-row.tip-Laborator { border-left-color: #10b981; }
+        .session-row.tip-Seminar { border-left-color: #f59e0b; }
+        .session-when { font-weight: 700; font-size: 11.5px; color: var(--text); min-width: 90px; flex-shrink: 0; }
+        .session-when .day { display: block; font-size: 10px; color: var(--text-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .session-when .time { font-family: 'SF Mono', monospace; font-size: 12px; }
+        .session-details { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; flex: 1; }
+        .session-chip {
+            font-size: 10.5px; font-weight: 600; padding: 2px 7px;
+            border-radius: 5px; background: rgba(148, 163, 184, 0.2);
+            color: var(--text); white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .session-chip.tip-Curs { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+        .session-chip.tip-Laborator { background: rgba(16, 185, 129, 0.15); color: #059669; }
+        .session-chip.tip-Seminar { background: rgba(245, 158, 11, 0.18); color: #d97706; }
+        [data-theme="dark"] .session-chip.tip-Curs { color: #93c5fd; }
+        [data-theme="dark"] .session-chip.tip-Laborator { color: #6ee7b7; }
+        [data-theme="dark"] .session-chip.tip-Seminar { color: #fcd34d; }
+        .session-teacher {
+            font-size: 11px; color: var(--text-soft);
+            width: 100%; padding-left: 2px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .session-teacher .ico { width: 11px; height: 11px; opacity: 0.7; }
+        .other-groups { margin-top: 6px; border-top: 1px dashed var(--border); padding-top: 10px; }
+        .other-groups summary {
+            cursor: pointer; font-size: 11.5px; font-weight: 600;
+            color: var(--text-soft); list-style: none;
+            display: flex; align-items: center; gap: 6px;
+            padding: 4px 0; user-select: none;
+        }
+        .other-groups summary::-webkit-details-marker { display: none; }
+        .other-groups summary::before {
+            content: '▸'; display: inline-block;
+            transition: transform 0.2s ease; font-size: 10px;
+        }
+        .other-groups[open] summary::before { transform: rotate(90deg); }
+        .other-groups summary:hover { color: var(--text); }
+        .group-block { margin-top: 8px; padding-left: 6px; }
+        .group-label {
+            display: inline-block; font-size: 10.5px; font-weight: 700;
+            background: rgba(59, 130, 246, 0.15); color: #3b82f6;
+            padding: 2px 8px; border-radius: 5px; margin-bottom: 5px;
+            letter-spacing: 0.03em;
+        }
+        [data-theme="dark"] .group-label { background: rgba(59, 130, 246, 0.25); color: #93c5fd; }
+        .session-row.compact {
+            padding: 5px 8px; font-size: 11px;
+            background: transparent; border-left-width: 2px;
+        }
+        .session-row.compact:hover { background: rgba(148, 163, 184, 0.1); }
+        .session-row.compact .session-when { min-width: 80px; font-size: 10.5px; }
+        .session-row.compact .session-chip { font-size: 9.5px; padding: 1px 6px; }
+        .no-sessions { font-size: 12px; color: var(--text-soft); font-style: italic; padding: 8px 0; }
+
+        /* ===== MOBILE DAY VIEW (hidden on desktop) ===== */
+        .mobile-view { display: none; }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px 8px calc(8px + var(--safe-bottom));
+                gap: 8px;
+            }
+            .container { gap: 8px; }
+
+            /* Compact topbar */
+            .topbar {
+                gap: 8px;
+                align-items: center;
+                flex-wrap: nowrap;
+            }
+            .brand { gap: 8px; flex: 1; min-width: 0; }
+            .badge { padding: 4px 10px; font-size: 10.5px; }
+            .badge .dot { width: 6px; height: 6px; }
+            h1 { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .legend { display: none; }
+            .theme-toggle { width: 36px; height: 36px; }
+            .theme-toggle svg { width: 16px; height: 16px; }
+
+            /* Tabs full-width, thumb-friendly */
+            .tabs {
+                width: 100%;
+                padding: 4px;
+                align-self: stretch;
+            }
+            .tab-btn {
+                flex: 1;
+                justify-content: center;
+                padding: 10px 8px;
+                font-size: 12.5px;
+                gap: 6px;
+            }
+            .tab-btn svg { width: 14px; height: 14px; }
+            .tab-btn .count { font-size: 10px; padding: 2px 6px; }
+
+            /* Timetable wrap becomes plain scroll container */
+            .timetable-wrap {
+                padding: 0;
+                border: none;
+                border-radius: 0;
+                background: transparent;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            /* Hide desktop grid on mobile */
+            #timetable-container { display: none !important; }
+
+            /* Show mobile view */
+            .mobile-view {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                flex: 1;
+                min-height: 0;
+                gap: 8px;
+            }
+
+            /* Day picker — horizontal scroll chips */
+            .day-picker {
+                display: flex;
+                gap: 6px;
+                overflow-x: auto;
+                padding: 2px 2px 4px;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                flex-shrink: 0;
+            }
+            .day-picker::-webkit-scrollbar { display: none; }
+            .day-chip {
+                flex-shrink: 0;
+                background: var(--card);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid var(--border);
+                color: var(--text-soft);
+                font-family: inherit;
+                font-size: 13px;
+                font-weight: 700;
+                padding: 9px 16px;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                letter-spacing: 0.02em;
+                text-transform: capitalize;
+            }
+            .day-chip:hover { color: var(--text); }
+            .day-chip.active {
+                background: var(--header);
+                color: #fff;
+                border-color: transparent;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+            }
+            .day-chip .day-count {
+                font-size: 10px;
+                background: rgba(59, 130, 246, 0.18);
+                color: #3b82f6;
+                padding: 1px 6px;
+                border-radius: 100px;
+                font-weight: 700;
+                line-height: 1.4;
+            }
+            .day-chip.active .day-count {
+                background: rgba(255,255,255,0.22);
+                color: #fff;
+            }
+
+            /* Day scroll area */
+            .day-scroll {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                padding-bottom: 8px;
+            }
+            .day-scroll::-webkit-scrollbar { width: 4px; }
+            .day-scroll::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 4px; }
+
+            /* Slot row */
+            .mobile-slot {
+                display: flex;
+                gap: 10px;
+                align-items: stretch;
+            }
+            .mobile-slot-time {
+                flex-shrink: 0;
+                width: 62px;
+                background: var(--header);
+                color: #fff;
+                font-weight: 700;
+                font-size: 12px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                letter-spacing: 0.02em;
+                padding: 10px 4px;
+                font-family: 'SF Mono', 'Consolas', monospace;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+                align-self: flex-start;
+            }
+            .mobile-slot-events {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                min-width: 0;
+            }
+            /* Empty slot — compact and faded */
+            .mobile-slot.empty .mobile-slot-time {
+                background: var(--card);
+                color: var(--text-soft);
+                opacity: 0.55;
+                box-shadow: none;
+                border: 1px dashed var(--border);
+                font-size: 11px;
+            }
+            .mobile-slot.empty .mobile-empty-label {
+                font-size: 11.5px;
+                color: var(--text-soft);
+                font-style: italic;
+                padding: 8px 2px;
+                opacity: 0.65;
+            }
+
+            /* Mobile event card — full-width, comfortable */
+            .mobile-event {
+                border-radius: 12px;
+                padding: 12px 14px;
+                color: #fff;
+                line-height: 1.3;
+                box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+                position: relative;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                cursor: pointer;
+                transition: transform 0.15s ease;
+            }
+            .mobile-event:active { transform: scale(0.98); }
+            .mobile-event::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0;
+                width: 4px; height: 100%;
+                background: rgba(255,255,255,0.55);
+            }
+            .mobile-event .disciplina {
+                font-weight: 700;
+                font-size: 14.5px;
+                padding-left: 6px;
+                line-height: 1.25;
+                letter-spacing: -0.01em;
+            }
+            .mobile-event .detalii {
+                font-size: 12px;
+                padding-left: 6px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .mobile-event .chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                background: rgba(255,255,255,0.22);
+                padding: 4px 10px;
+                border-radius: 7px;
+                font-size: 11.5px;
+                font-weight: 700;
+                white-space: nowrap;
+                backdrop-filter: blur(4px);
+            }
+            .mobile-event .chip .ico { width: 12px; height: 12px; }
+            .mobile-event .prof {
+                padding-left: 6px;
+                font-size: 12px;
+                font-weight: 500;
+                opacity: 0.96;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                line-height: 1.35;
+            }
+            .mobile-event .prof .ico { width: 12px; height: 12px; opacity: 0.9; }
+            .mobile-event .frecventa {
+                padding-left: 6px;
+                font-size: 11.5px;
+                font-style: italic;
+                opacity: 0.9;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .mobile-event .frecventa .ico { width: 11px; height: 11px; opacity: 0.9; }
+
+            /* Discipline tab mobile */
+            .discipline-scroll { padding-right: 0; padding-bottom: 4px; }
+            .info-banner { padding: 10px 14px; font-size: 12px; margin-bottom: 12px; }
+            .info-banner .ico { width: 16px; height: 16px; }
+            .discipline-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .disc-card { border-radius: 14px; }
+            .disc-header { padding: 12px 14px; }
+            .disc-code { font-size: 10px; padding: 3px 8px; }
+            .disc-name { font-size: 14px; }
+            .disc-count { font-size: 10px; padding: 3px 8px; }
+            .disc-body { padding: 12px 14px; gap: 10px; }
+
+            .session-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                padding: 10px 12px;
+            }
+            .session-when {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-width: 0;
+            }
+            .session-when .day { font-size: 11px; }
+            .session-when .time { font-size: 13px; }
+            .session-details { gap: 5px; }
+            .session-chip { font-size: 11px; padding: 3px 8px; }
+            .session-teacher { font-size: 11.5px; }
+            .session-row.compact {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 8px 10px;
+                gap: 5px;
+            }
+            .session-row.compact .session-when { min-width: 0; }
+            .other-groups summary { font-size: 12px; padding: 8px 0; }
+            .group-label { font-size: 11px; padding: 3px 9px; }
+        }
+
+        /* Very small phones */
+        @media (max-width: 380px) {
+            h1 { font-size: 14px; }
+            .badge { font-size: 10px; padding: 3px 9px; }
+            .tab-btn { font-size: 11.5px; padding: 9px 6px; }
+            .mobile-slot-time { width: 56px; font-size: 11px; }
+            .mobile-event { padding: 10px 12px; }
+            .mobile-event .disciplina { font-size: 13.5px; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .event { animation: fadeUp 0.3s ease backwards; }
+        .disc-card { animation: fadeUp 0.35s ease backwards; }
+        .mobile-event { animation: fadeUp 0.25s ease backwards; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <div class="badge"><span class="dot"></span> Semigrupa I · 232</div>
+                <h1>Orar Academic</h1>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><span class="legend-color curs"></span> Curs</div>
+                <div class="legend-item"><span class="legend-color laborator"></span> Laborator</div>
+                <div class="legend-item"><span class="legend-color seminar"></span> Seminar</div>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Comută tema">
+                <span id="theme-icon"></span>
+            </button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="orar" onclick="switchTab('orar')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+                Orar
+            </button>
+            <button class="tab-btn" data-tab="discipline" onclick="switchTab('discipline')">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm0 18H6V4h2v8l2.5-1.5L13 12V4h5v16z"/></svg>
+                Discipline
+                <span class="count" id="disc-count">7</span>
+            </button>
+        </div>
+
+        <div id="tab-orar" class="tab-content active">
+            <div class="timetable-wrap">
+                <div id="timetable-container"></div>
+
+                <!-- Mobile day view -->
+                <div class="mobile-view">
+                    <div class="day-picker" id="day-picker"></div>
+                    <div class="day-scroll" id="day-scroll"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-discipline" class="tab-content">
+            <div class="discipline-scroll">
+                <div class="info-banner">
+                    <svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                    <div>
+                        <strong>Disciplinele tale (MLR5023, MLR7001, MLR5077, MLR5078, MLR5067, MLR5012, MLE5153).</strong>
+                        Sesiunile din grupa ta (232), semigrupa ta (232/1) și seria ta (I3). Secțiunea „Rulează și pentru alte grupe” arată unde se ține și pentru colegii din alte grupe (util pentru recuperări).
+                    </div>
+                </div>
+                <div class="discipline-grid" id="discipline-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ICON = {
+            pin: '<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>',
+            group: '<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 2c-2.34 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.34 13 8 13zm8 0c-.29 0-.62.02-.97.05A4.5 4.5 0 0 1 17 16.5V19h6v-2.5c0-2.33-4.66-3.5-7-3.5z"/></svg>',
+            user: '<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>',
+            calendar: '<svg class="ico" viewBox="0 0 24 24" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>',
+            sun: '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+            moon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+        };
+
+        function setThemeIcon(theme) {
+            document.getElementById('theme-icon').innerHTML = theme === 'dark' ? ICON.sun : ICON.moon;
+        }
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            setThemeIcon(next);
+            localStorage.setItem('theme', next);
+            // Update theme-color meta for mobile browsers
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', next === 'dark' ? '#0b1220' : '#1e293b');
+        }
+        (function() {
+            const saved = localStorage.getItem('theme') || 'light';
+            if (saved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+            setThemeIcon(saved);
+        })();
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+        }
+
+        const evenimente = [
+            { zi: "Luni", ore: "16-18", frec: "", sala: "7/I", formatie: "I3", tip: "Curs", disciplina: "Arhitectura aplicatiilor cloud", cadru: "Lect. GREBLA Horea" },
+            { zi: "Luni", ore: "16-18", frec: "", sala: "MOS-S15", formatie: "232/1", tip: "Laborator", disciplina: "Limbaje formale si tehnici de compilare", cadru: "Asist. POP Ioan Daniel" },
+            { zi: "Luni", ore: "18-20", frec: "", sala: "5/I", formatie: "232", tip: "Seminar", disciplina: "Limbaje formale si tehnici de compilare", cadru: "Asist. POP Ioan Daniel" },
+            { zi: "Luni", ore: "10-12", frec: "sapt. 2", sala: "L439", formatie: "232", tip: "Laborator", disciplina: "Metode inteligente de rezolvare a problemelor reale", cadru: "Asist. MANOLE Alexandru" },
+            { zi: "Marti", ore: "8-10", frec: "", sala: "6/II", formatie: "I3", tip: "Curs", disciplina: "Metode inteligente de rezolvare a problemelor reale", cadru: "Prof. DIOSAN Laura" },
+            { zi: "Marti", ore: "14-16", frec: "", sala: "2/I", formatie: "I3", tip: "Curs", disciplina: "Limbaje formale si tehnici de compilare", cadru: "Lect. LUPSA Dana" },
+            { zi: "Marti", ore: "16-18", frec: "", sala: "2/I", formatie: "I3", tip: "Curs", disciplina: "Programare paralela si distribuita", cadru: "Lect. LUPSA Radu" },
+            { zi: "Marti", ore: "18-20", frec: "sapt. 1", sala: "DC507", formatie: "I3", tip: "Laborator", disciplina: "Arhitectura aplicatiilor cloud", cadru: "C.d.asociat STEFANIE Andrei" },
+            { zi: "Joi", ore: "8-10", frec: "", sala: "DC504", formatie: "232/1", tip: "Laborator", disciplina: "Programare paralela si distribuita", cadru: "C.d.asociat GALAN Sorana-Antonia" },
+            { zi: "Joi", ore: "18-20", frec: "sapt. 2", sala: "S01", formatie: "232/1", tip: "Laborator", disciplina: "Programare pentru dispozitive mobile", cadru: "Lect. LAZAR Ioan" },
+            { zi: "Vineri", ore: "14-16", frec: "", sala: "C036", formatie: "I3", tip: "Curs", disciplina: "Programare pentru dispozitive mobile", cadru: "Lect. LAZAR Ioan" },
+            { zi: "Vineri", ore: "18-20", frec: "", sala: "Virtual", formatie: "232", tip: "Laborator", disciplina: "Proiect colectiv", cadru: "C.d.asociat Mentor Proiect Colectiv 2" }
+        ];
+
+        const disciplineMele = [
+            { cod: "MLR5023", nume: "Limbaje formale și tehnici de compilare",
+              mele: [
+                { zi: "Marti", ore: "14–16", sala: "2/I", formatie: "I3", tip: "Curs", cadru: "Lect. LUPSA Dana", frec: "" },
+                { zi: "Luni", ore: "16–18", sala: "MOS-S15", formatie: "232/1", tip: "Laborator", cadru: "Asist. POP Ioan Daniel", frec: "" },
+                { zi: "Luni", ore: "18–20", sala: "5/I", formatie: "232", tip: "Seminar", cadru: "Asist. POP Ioan Daniel", frec: "" }
+              ],
+              altele: [
+                { grupa: "231", sesiuni: [
+                    { zi: "Luni", ore: "8–10", sala: "DC402", formatie: "231", tip: "Seminar", cadru: "Asist. POP Ioan Daniel" },
+                    { zi: "Luni", ore: "12–14", sala: "DC504", formatie: "231/1", tip: "Laborator", cadru: "Asist. POP Ioan Daniel" },
+                    { zi: "Miercuri", ore: "14–16", sala: "DC501", formatie: "231/2", tip: "Laborator", cadru: "C.d.asociat MIHIS Alin" }
+                ]},
+                { grupa: "233", sesiuni: [
+                    { zi: "Marti", ore: "10–12", sala: "DC504", formatie: "233/1", tip: "Laborator", cadru: "Asist. POP Ioan Daniel" },
+                    { zi: "Joi", ore: "16–18", sala: "L001", formatie: "233", tip: "Seminar", cadru: "Lect. POP Andreea" }
+                ]},
+                { grupa: "234", sesiuni: [
+                    { zi: "Miercuri", ore: "12–14", sala: "S01", formatie: "234/2", tip: "Laborator", cadru: "C.d.asociat MIHIS Alin" },
+                    { zi: "Vineri", ore: "10–12", sala: "L439", formatie: "234/1", tip: "Laborator", cadru: "Lect. LUPSA Dana" },
+                    { zi: "Vineri", ore: "12–14", sala: "DC401", formatie: "234", tip: "Seminar", cadru: "Lect. POP Andreea" }
+                ]},
+                { grupa: "235", sesiuni: [
+                    { zi: "Joi", ore: "16–18", sala: "DC505", formatie: "235/2", tip: "Laborator", cadru: "Asist. MANOLE Alexandru" },
+                    { zi: "Joi", ore: "18–20", sala: "L001", formatie: "235", tip: "Seminar", cadru: "Lect. POP Andreea" },
+                    { zi: "Vineri", ore: "8–10", sala: "L439", formatie: "235/1", tip: "Laborator", cadru: "Lect. LUPSA Dana" }
+                ]},
+                { grupa: "236", sesiuni: [
+                    { zi: "Joi", ore: "8–10", sala: "DC402", formatie: "236", tip: "Seminar", cadru: "Lect. POP Andreea" },
+                    { zi: "Joi", ore: "18–20", sala: "DC506", formatie: "236/2", tip: "Laborator", cadru: "Asist. MANOLE Alexandru" },
+                    { zi: "Vineri", ore: "12–14", sala: "DC405", formatie: "236/1", tip: "Laborator", cadru: "Asist. MANOLE Alexandru" }
+                ]}
+              ]
+            },
+            { cod: "MLR7001", nume: "Practică", mele: [], altele: [] },
+            { cod: "MLR5077", nume: "Programare paralelă și distribuită",
+              mele: [
+                { zi: "Marti", ore: "16–18", sala: "2/I", formatie: "I3", tip: "Curs", cadru: "Lect. LUPSA Radu", frec: "" },
+                { zi: "Joi", ore: "8–10", sala: "DC504", formatie: "232/1", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia", frec: "" }
+              ],
+              altele: [
+                { grupa: "231", sesiuni: [
+                    { zi: "Luni", ore: "16–18", sala: "DC506", formatie: "231/2", tip: "Laborator", cadru: "Drd. ARDELEAN Daniel" },
+                    { zi: "Luni", ore: "18–20", sala: "DC505", formatie: "231/1", tip: "Laborator", cadru: "C.d.asociat TOMOIAGA Cristian" }
+                ]},
+                { grupa: "233", sesiuni: [
+                    { zi: "Luni", ore: "18–20", sala: "DC506", formatie: "233/1", tip: "Laborator", cadru: "Drd. ARDELEAN Daniel" },
+                    { zi: "Joi", ore: "18–20", sala: "DC507", formatie: "233/2", tip: "Laborator", cadru: "C.d.asociat TOMOIAGA Cristian" }
+                ]},
+                { grupa: "234", sesiuni: [
+                    { zi: "Vineri", ore: "8–10", sala: "DC507", formatie: "234/1", tip: "Laborator", cadru: "Lect. LUPSA Radu" },
+                    { zi: "Vineri", ore: "10–12", sala: "DC503", formatie: "234/2", tip: "Laborator", cadru: "Lect. LUPSA Radu" }
+                ]},
+                { grupa: "235", sesiuni: [
+                    { zi: "Vineri", ore: "12–14", sala: "DC502", formatie: "235/1", tip: "Laborator", cadru: "Lect. LUPSA Radu" },
+                    { zi: "Vineri", ore: "12–14", sala: "DC503", formatie: "235/2", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia" }
+                ]},
+                { grupa: "236", sesiuni: [
+                    { zi: "Luni", ore: "18–20", sala: "DC507", formatie: "236/2", tip: "Laborator", cadru: "Lect. LUPSA Radu" },
+                    { zi: "Vineri", ore: "10–12", sala: "DC504", formatie: "236/1", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia" }
+                ]}
+              ]
+            },
+            { cod: "MLR5078", nume: "Programare pentru dispozitive mobile",
+              mele: [
+                { zi: "Vineri", ore: "14–16", sala: "C036", formatie: "I3", tip: "Curs", cadru: "Lect. LAZAR Ioan", frec: "" },
+                { zi: "Joi", ore: "18–20", sala: "S01", formatie: "232/1", tip: "Laborator", cadru: "Lect. LAZAR Ioan", frec: "sapt. 2" }
+              ],
+              altele: [
+                { grupa: "231", sesiuni: [
+                    { zi: "Joi", ore: "14–16", sala: "S01", formatie: "231/1", tip: "Laborator", cadru: "Lect. LAZAR Ioan", frec: "sapt. 2" },
+                    { zi: "Joi", ore: "16–18", sala: "L321", formatie: "231/2", tip: "Laborator", cadru: "Lect. LAZAR Ioan", frec: "sapt. 1" }
+                ]},
+                { grupa: "233", sesiuni: [
+                    { zi: "Joi", ore: "14–16", sala: "S01", formatie: "233/1", tip: "Laborator", cadru: "Lect. LAZAR Ioan", frec: "sapt. 1" },
+                    { zi: "Vineri", ore: "12–14", sala: "L404", formatie: "233/2", tip: "Laborator", cadru: "Drd. BOTA Daniel", frec: "sapt. 1" }
+                ]},
+                { grupa: "234", sesiuni: [
+                    { zi: "Joi", ore: "18–20", sala: "S01", formatie: "234/1", tip: "Laborator", cadru: "Lect. LAZAR Ioan", frec: "sapt. 1" },
+                    { zi: "Vineri", ore: "8–10", sala: "L404", formatie: "234/2", tip: "Laborator", cadru: "Drd. BOTA Daniel", frec: "sapt. 1" }
+                ]},
+                { grupa: "235", sesiuni: [
+                    { zi: "Vineri", ore: "10–12", sala: "L404", formatie: "235/1", tip: "Laborator", cadru: "Drd. BOTA Daniel", frec: "sapt. 1" },
+                    { zi: "Vineri", ore: "10–12", sala: "L404", formatie: "235/2", tip: "Laborator", cadru: "Drd. BOTA Daniel", frec: "sapt. 2" }
+                ]},
+                { grupa: "236", sesiuni: [
+                    { zi: "Luni", ore: "8–10", sala: "L321", formatie: "236/2", tip: "Laborator", cadru: "Drd. BOTA Daniel", frec: "sapt. 2" },
+                    { zi: "Vineri", ore: "8–10", sala: "L404", formatie: "236/1", tip: "Laborator", cadru: "Drd. BOTA Daniel", frec: "sapt. 2" }
+                ]}
+              ]
+            },
+            { cod: "MLR5067", nume: "Metode inteligente de rezolvare a problemelor reale",
+              mele: [
+                { zi: "Marti", ore: "8–10", sala: "6/II", formatie: "I3", tip: "Curs", cadru: "Prof. DIOSAN Laura", frec: "" },
+                { zi: "Luni", ore: "10–12", sala: "L439", formatie: "232", tip: "Laborator", cadru: "Asist. MANOLE Alexandru", frec: "sapt. 2" }
+              ],
+              altele: [
+                { grupa: "231", sesiuni: [{ zi: "Luni", ore: "10–12", sala: "L439", formatie: "231", tip: "Laborator", cadru: "Asist. MANOLE Alexandru", frec: "sapt. 1" }] },
+                { grupa: "233", sesiuni: [{ zi: "Luni", ore: "12–14", sala: "S01", formatie: "233", tip: "Laborator", cadru: "Asist. MANOLE Alexandru", frec: "sapt. 1" }] },
+                { grupa: "234", sesiuni: [{ zi: "Luni", ore: "12–14", sala: "S01", formatie: "234", tip: "Laborator", cadru: "Asist. MANOLE Alexandru", frec: "sapt. 2" }] },
+                { grupa: "235", sesiuni: [{ zi: "Luni", ore: "12–14", sala: "S01", formatie: "235", tip: "Laborator", cadru: "Asist. MANOLE Alexandru", frec: "sapt. 1" }] },
+                { grupa: "236", sesiuni: [{ zi: "Luni", ore: "10–12", sala: "L439", formatie: "236", tip: "Laborator", cadru: "Asist. MANOLE Alexandru", frec: "sapt. 1" }] }
+              ]
+            },
+            { cod: "MLR5012", nume: "Proiect colectiv",
+              mele: [
+                { zi: "Vineri", ore: "18–20", sala: "Virtual", formatie: "232", tip: "Laborator", cadru: "C.d.asociat Mentor Proiect Colectiv 2", frec: "" }
+              ],
+              altele: [
+                { grupa: "231", sesiuni: [{ zi: "Vineri", ore: "18–20", sala: "DC405", formatie: "231", tip: "Laborator", cadru: "C.d.asociat Mentor Proiect Colectiv 1" }] },
+                { grupa: "233", sesiuni: [{ zi: "Vineri", ore: "18–20", sala: "Virtual", formatie: "233", tip: "Laborator", cadru: "C.d.asociat Mentor Proiect Colectiv 3" }] },
+                { grupa: "234", sesiuni: [{ zi: "Vineri", ore: "18–20", sala: "Virtual", formatie: "234", tip: "Laborator", cadru: "C.d.asociat Mentor Proiect Colectiv 4" }] },
+                { grupa: "235", sesiuni: [{ zi: "Vineri", ore: "18–20", sala: "Virtual", formatie: "235", tip: "Laborator", cadru: "C.d.asociat Mentor Proiect Colectiv 5" }] },
+                { grupa: "236", sesiuni: [{ zi: "Vineri", ore: "18–20", sala: "Virtual", formatie: "236", tip: "Laborator", cadru: "C.d.asociat Mentor Proiect Colectiv 6" }] }
+              ]
+            },
+            { cod: "MLE5153", nume: "Arhitectura aplicațiilor cloud",
+              mele: [
+                { zi: "Luni", ore: "16–18", sala: "7/I", formatie: "I3", tip: "Curs", cadru: "Lect. GREBLA Horea", frec: "" },
+                { zi: "Marti", ore: "18–20", sala: "DC507", formatie: "I3", tip: "Laborator", cadru: "C.d.asociat STEFANIE Andrei", frec: "sapt. 1" }
+              ],
+              altele: []
+            }
+        ];
+
+        const zile = [
+            { key: "Luni", label: "Luni" },
+            { key: "Marti", label: "Marți" },
+            { key: "Miercuri", label: "Miercuri" },
+            { key: "Joi", label: "Joi" },
+            { key: "Vineri", label: "Vineri" }
+        ];
+        const sloturi = [
+            { label: "8–10", start: 8 },
+            { label: "10–12", start: 10 },
+            { label: "12–14", start: 12 },
+            { label: "14–16", start: 14 },
+            { label: "16–18", start: 16 },
+            { label: "18–20", start: 18 }
+        ];
+        const getStartHour = ore => parseInt(ore.split('-')[0], 10);
+
+        // ===== DESKTOP GRID =====
+        function renderDesktopTimetable() {
+            let html = '<div class="grid">';
+            html += '<div class="cell header corner">Ora</div>';
+            zile.forEach(z => html += `<div class="cell header">${z.label}</div>`);
+
+            sloturi.forEach(slot => {
+                html += `<div class="cell time"><span class="time-label">${slot.label}</span></div>`;
+                zile.forEach(z => {
+                    const events = evenimente.filter(e => e.zi === z.key && getStartHour(e.ore) === slot.start);
+                    if (events.length === 0) {
+                        html += '<div class="cell empty"><span class="dot-empty">·</span></div>';
+                    } else {
+                        const cellClass = events.length > 1 ? 'cell multi' : 'cell';
+                        html += `<div class="${cellClass}">`;
+                        events.forEach((e, i) => {
+                            const delay = (i * 0.04).toFixed(2);
+                            const tooltip = `${e.disciplina} · ${e.tip} · Sala ${e.sala} · ${e.formatie} · ${e.cadru}${e.frec ? ' · ' + e.frec : ''}`;
+                            html += `<div class="event ${e.tip}" style="animation-delay: ${delay}s" title="${tooltip}">`;
+                            html += `<div class="disciplina">${e.disciplina}</div>`;
+                            html += `<div class="detalii">`;
+                            html += `<span class="chip">${e.tip}</span>`;
+                            html += `<span class="chip">${ICON.pin}${e.sala}</span>`;
+                            html += `<span class="chip">${ICON.group}${e.formatie}</span>`;
+                            html += `</div>`;
+                            html += `<div class="prof">${ICON.user}<span>${e.cadru}</span></div>`;
+                            if (e.frec) html += `<div class="frecventa">${ICON.calendar}<span>${e.frec}</span></div>`;
+                            html += `</div>`;
+                        });
+                        html += '</div>';
+                    }
+                });
+            });
+            html += '</div>';
+            document.getElementById('timetable-container').innerHTML = html;
+        }
+
+        // ===== MOBILE DAY VIEW =====
+        let selectedDay = (function() {
+            // Default to today if it's Mon-Fri, else Monday
+            const map = { 1: "Luni", 2: "Marti", 3: "Miercuri", 4: "Joi", 5: "Vineri" };
+            const today = new Date().getDay();
+            const saved = localStorage.getItem('selectedDay');
+            if (saved && zile.some(z => z.key === saved)) return saved;
+            return map[today] || "Luni";
+        })();
+
+        function renderDayPicker() {
+            const picker = document.getElementById('day-picker');
+            picker.innerHTML = zile.map(z => {
+                const count = evenimente.filter(e => e.zi === z.key).length;
+                return `<button class="day-chip ${z.key === selectedDay ? 'active' : ''}" data-day="${z.key}" onclick="selectDay('${z.key}')">
+                    ${z.label}
+                    <span class="day-count">${count}</span>
+                </button>`;
+            }).join('');
+        }
+
+        function renderDayView() {
+            const scroll = document.getElementById('day-scroll');
+            let html = '';
+            let hasAnyEvent = false;
+
+            sloturi.forEach(slot => {
+                const events = evenimente.filter(e => e.zi === selectedDay && getStartHour(e.ore) === slot.start);
+                if (events.length === 0) {
+                    html += `<div class="mobile-slot empty">
+                        <div class="mobile-slot-time">${slot.label}</div>
+                        <div class="mobile-empty-label">— liber —</div>
+                    </div>`;
+                } else {
+                    hasAnyEvent = true;
+                    html += `<div class="mobile-slot">`;
+                    html += `<div class="mobile-slot-time">${slot.label}</div>`;
+                    html += `<div class="mobile-slot-events">`;
+                    events.forEach((e, i) => {
+                        const delay = (i * 0.04).toFixed(2);
+                        html += `<div class="mobile-event ${e.tip}" style="animation-delay: ${delay}s">`;
+                        html += `<div class="disciplina">${e.disciplina}</div>`;
+                        html += `<div class="detalii">`;
+                        html += `<span class="chip">${e.tip}</span>`;
+                        html += `<span class="chip">${ICON.pin}${e.sala}</span>`;
+                        html += `<span class="chip">${ICON.group}${e.formatie}</span>`;
+                        if (e.frec) html += `<span class="chip">${ICON.calendar}${e.frec}</span>`;
+                        html += `</div>`;
+                        html += `<div class="prof">${ICON.user}<span>${e.cadru}</span></div>`;
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                    html += `</div>`;
+                }
+            });
+
+            scroll.innerHTML = html;
+        }
+
+        function selectDay(day) {
+            selectedDay = day;
+            localStorage.setItem('selectedDay', day);
+            renderDayPicker();
+            renderDayView();
+            // Smooth scroll to top of day view
+            const scroll = document.getElementById('day-scroll');
+            if (scroll) scroll.scrollTop = 0;
+        }
+
+        // ===== DISCIPLINE TAB =====
+        function renderDiscipline() {
+            const grid = document.getElementById('discipline-grid');
+            let html = '';
+            disciplineMele.forEach((d, idx) => {
+                const nrSesiuni = d.mele.length;
+                html += `<div class="disc-card" style="animation-delay: ${idx * 0.05}s">`;
+                html += `<div class="disc-header">`;
+                html += `<div class="disc-header-info">`;
+                html += `<span class="disc-code">${d.cod}</span>`;
+                html += `<span class="disc-name">${d.nume}</span>`;
+                html += `</div>`;
+                html += `<span class="disc-count">${nrSesiuni} ${nrSesiuni === 1 ? 'sesiune' : 'sesiuni'}</span>`;
+                html += `</div>`;
+                html += `<div class="disc-body">`;
+                html += `<div>`;
+                html += `<div class="disc-section-title"><span class="dot-me"></span>Sesiunile tale</div>`;
+                if (d.mele.length === 0) {
+                    html += `<div class="no-sessions">Momentan nu apare nicio sesiune în orar pentru această disciplină. Verifică cu secretariatul.</div>`;
+                } else {
+                    d.mele.forEach(s => {
+                        html += `<div class="session-row tip-${s.tip}">`;
+                        html += `<div class="session-when"><span class="day">${s.zi}</span><span class="time">${s.ore}</span></div>`;
+                        html += `<div class="session-details">`;
+                        html += `<span class="session-chip tip-${s.tip}">${s.tip}</span>`;
+                        html += `<span class="session-chip">${ICON.pin}${s.sala}</span>`;
+                        html += `<span class="session-chip">${ICON.group}${s.formatie}</span>`;
+                        if (s.frec) html += `<span class="session-chip">${ICON.calendar}${s.frec}</span>`;
+                        html += `<div class="session-teacher">${ICON.user}${s.cadru}</div>`;
+                        html += `</div>`;
+                        html += `</div>`;
+                    });
+                }
+                html += `</div>`;
+                if (d.altele && d.altele.length > 0) {
+                    html += `<details class="other-groups">`;
+                    html += `<summary>Rulează și pentru alte grupe (${d.altele.length} grupe) — pentru recuperări</summary>`;
+                    d.altele.forEach(g => {
+                        html += `<div class="group-block">`;
+                        html += `<span class="group-label">Grupa ${g.grupa}</span>`;
+                        g.sesiuni.forEach(s => {
+                            html += `<div class="session-row compact tip-${s.tip}">`;
+                            html += `<div class="session-when"><span class="day">${s.zi}</span><span class="time">${s.ore}</span></div>`;
+                            html += `<div class="session-details">`;
+                            html += `<span class="session-chip tip-${s.tip}">${s.tip}</span>`;
+                            html += `<span class="session-chip">${s.sala}</span>`;
+                            html += `<span class="session-chip">${s.formatie}</span>`;
+                            if (s.frec) html += `<span class="session-chip">${s.frec}</span>`;
+                            html += `<div class="session-teacher">${ICON.user}${s.cadru}</div>`;
+                            html += `</div>`;
+                            html += `</div>`;
+                        });
+                        html += `</div>`;
+                    });
+                    html += `</details>`;
+                }
+                html += `</div>`;
+                html += `</div>`;
+            });
+            grid.innerHTML = html;
+            document.getElementById('disc-count').textContent = disciplineMele.length;
+        }
+
+        // ===== INIT =====
+        renderDesktopTimetable();
+        renderDayPicker();
+        renderDayView();
+        renderDiscipline();
+
+        // Re-render on resize (simple approach — desktop grid is CSS-hidden on mobile anyway)
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                // Nothing needed — CSS handles show/hide, but this hook is here
+                // if you later want to conditionally render for perf.
+            }, 200);
+        });
+    </script>
+</body>
+</html>
