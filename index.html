@@ -122,7 +122,6 @@
             display: flex; overflow: hidden;
         }
 
-        /* ===== DESKTOP — flex columns with day separators ===== */
         .grid {
             display: flex;
             gap: 7px;
@@ -136,23 +135,10 @@
             min-height: 0;
             position: relative;
         }
-        .col.time-col {
-            width: 80px;
-            flex-shrink: 0;
-        }
-        .col.day-col {
-            flex: 1;
-            min-width: 0;
-        }
-        .col .cell.header {
-            flex: 0 0 40px;
-            height: 40px;
-        }
-        .col .cell:not(.header) {
-            flex: 1 1 0;
-            min-height: 0;
-        }
-        /* The separator line between day columns */
+        .col.time-col { width: 80px; flex-shrink: 0; }
+        .col.day-col { flex: 1; min-width: 0; }
+        .col .cell.header { flex: 0 0 40px; height: 40px; }
+        .col .cell:not(.header) { flex: 1 1 0; min-height: 0; }
         .col.day-col:not(:last-child)::after {
             content: '';
             position: absolute;
@@ -170,7 +156,6 @@
             pointer-events: none;
             z-index: 1;
         }
-
         .cell {
             background: var(--card-solid);
             border-radius: 11px; padding: 8px;
@@ -780,6 +765,8 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
         }
 
+        // ===== YOUR WEEKLY TIMETABLE =====
+        // Updated: Arhitectura lab moved from Marti 18-20 sapt.1 DC507 -> Miercuri 16-18 sapt.2 L001
         const evenimente = [
             { zi: "Luni", ore: "16-18", frec: "", sala: "7/I", formatie: "I3", tip: "Curs", disciplina: "Arhitectura aplicatiilor cloud", cadru: "Lect. GREBLA Horea" },
             { zi: "Luni", ore: "16-18", frec: "", sala: "MOS-S15", formatie: "232/1", tip: "Laborator", disciplina: "Limbaje formale si tehnici de compilare", cadru: "Asist. POP Ioan Daniel" },
@@ -788,7 +775,7 @@
             { zi: "Marti", ore: "8-10", frec: "", sala: "6/II", formatie: "I3", tip: "Curs", disciplina: "Metode inteligente de rezolvare a problemelor reale", cadru: "Prof. DIOSAN Laura" },
             { zi: "Marti", ore: "14-16", frec: "", sala: "2/I", formatie: "I3", tip: "Curs", disciplina: "Limbaje formale si tehnici de compilare", cadru: "Lect. LUPSA Dana" },
             { zi: "Marti", ore: "16-18", frec: "", sala: "2/I", formatie: "I3", tip: "Curs", disciplina: "Programare paralela si distribuita", cadru: "Lect. LUPSA Radu" },
-            { zi: "Marti", ore: "18-20", frec: "sapt. 1", sala: "DC507", formatie: "I3", tip: "Laborator", disciplina: "Arhitectura aplicatiilor cloud", cadru: "C.d.asociat STEFANIE Andrei" },
+            { zi: "Miercuri", ore: "16-18", frec: "sapt. 2", sala: "L001", formatie: "I3", tip: "Laborator", disciplina: "Arhitectura aplicatiilor cloud", cadru: "C.d.asociat STEFANIE Andrei" },
             { zi: "Joi", ore: "8-10", frec: "", sala: "DC504", formatie: "232/1", tip: "Laborator", disciplina: "Programare paralela si distribuita", cadru: "C.d.asociat GALAN Sorana-Antonia" },
             { zi: "Joi", ore: "18-20", frec: "sapt. 2", sala: "S01", formatie: "232/1", tip: "Laborator", disciplina: "Programare pentru dispozitive mobile", cadru: "Lect. LAZAR Ioan" },
             { zi: "Vineri", ore: "14-16", frec: "", sala: "C036", formatie: "I3", tip: "Curs", disciplina: "Programare pentru dispozitive mobile", cadru: "Lect. LAZAR Ioan" },
@@ -809,6 +796,7 @@
                     { zi: "Miercuri", ore: "14–16", sala: "DC501", formatie: "231/2", tip: "Laborator", cadru: "C.d.asociat MIHIS Alin" }
                 ]},
                 { grupa: "233", sesiuni: [
+                    { zi: "Luni", ore: "10–12", sala: "S01", formatie: "233/2", tip: "Laborator", cadru: "C.d.asociat MIHIS Alin" },
                     { zi: "Marti", ore: "10–12", sala: "DC504", formatie: "233/1", tip: "Laborator", cadru: "Asist. POP Ioan Daniel" },
                     { zi: "Joi", ore: "16–18", sala: "L001", formatie: "233", tip: "Seminar", cadru: "Lect. POP Andreea" }
                 ]},
@@ -818,6 +806,7 @@
                     { zi: "Vineri", ore: "12–14", sala: "DC401", formatie: "234", tip: "Seminar", cadru: "Lect. POP Andreea" }
                 ]},
                 { grupa: "235", sesiuni: [
+                    { zi: "Marti", ore: "12–14", sala: "2/I", formatie: "235/1", tip: "Laborator", cadru: "Lect. LUPSA Dana" },
                     { zi: "Joi", ore: "16–18", sala: "DC505", formatie: "235/2", tip: "Laborator", cadru: "Asist. MANOLE Alexandru" },
                     { zi: "Joi", ore: "18–20", sala: "L001", formatie: "235", tip: "Seminar", cadru: "Lect. POP Andreea" },
                     { zi: "Vineri", ore: "8–10", sala: "L439", formatie: "235/1", tip: "Laborator", cadru: "Lect. LUPSA Dana" }
@@ -849,12 +838,12 @@
                     { zi: "Vineri", ore: "10–12", sala: "DC503", formatie: "234/2", tip: "Laborator", cadru: "Lect. LUPSA Radu" }
                 ]},
                 { grupa: "235", sesiuni: [
-                    { zi: "Vineri", ore: "12–14", sala: "DC502", formatie: "235/1", tip: "Laborator", cadru: "Lect. LUPSA Radu" },
-                    { zi: "Vineri", ore: "12–14", sala: "DC503", formatie: "235/2", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia" }
+                    { zi: "Luni", ore: "8–10", sala: "DC503", formatie: "235/2", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia" },
+                    { zi: "Vineri", ore: "12–14", sala: "DC502", formatie: "235/1", tip: "Laborator", cadru: "Lect. LUPSA Radu" }
                 ]},
                 { grupa: "236", sesiuni: [
                     { zi: "Luni", ore: "18–20", sala: "DC507", formatie: "236/2", tip: "Laborator", cadru: "Lect. LUPSA Radu" },
-                    { zi: "Vineri", ore: "10–12", sala: "DC504", formatie: "236/1", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia" }
+                    { zi: "Luni", ore: "18–20", sala: "MOS-S16", formatie: "236/1", tip: "Laborator", cadru: "C.d.asociat GALAN Sorana-Antonia" }
                 ]}
               ]
             },
@@ -914,7 +903,7 @@
             { cod: "MLE5153", nume: "Arhitectura aplicațiilor cloud",
               mele: [
                 { zi: "Luni", ore: "16–18", sala: "7/I", formatie: "I3", tip: "Curs", cadru: "Lect. GREBLA Horea", frec: "" },
-                { zi: "Marti", ore: "18–20", sala: "DC507", formatie: "I3", tip: "Laborator", cadru: "C.d.asociat STEFANIE Andrei", frec: "sapt. 1" }
+                { zi: "Miercuri", ore: "16–18", sala: "L001", formatie: "I3", tip: "Laborator", cadru: "C.d.asociat STEFANIE Andrei", frec: "sapt. 2" }
               ],
               altele: []
             }
@@ -937,11 +926,9 @@
         ];
         const getStartHour = ore => parseInt(ore.split('-')[0], 10);
 
-        // ===== DESKTOP =====
         function renderDesktopTimetable() {
             let html = '<div class="grid">';
 
-            // Time column
             html += '<div class="col time-col">';
             html += '<div class="cell header corner">Ora</div>';
             sloturi.forEach(slot => {
@@ -949,7 +936,6 @@
             });
             html += '</div>';
 
-            // Day columns
             zile.forEach(z => {
                 html += '<div class="col day-col">';
                 html += `<div class="cell header">${z.label}</div>`;
@@ -984,7 +970,6 @@
             document.getElementById('timetable-container').innerHTML = html;
         }
 
-        // ===== MOBILE =====
         const todayKey = (function() {
             const map = { 1: "Luni", 2: "Marti", 3: "Miercuri", 4: "Joi", 5: "Vineri" };
             return map[new Date().getDay()] || null;
@@ -1077,11 +1062,8 @@
         }
 
         function jumpToToday() {
-            if (todayKey) {
-                selectDay(todayKey);
-            } else {
-                selectDay("Luni");
-            }
+            if (todayKey) selectDay(todayKey);
+            else selectDay("Luni");
         }
 
         (function setupSwipe() {
@@ -1106,7 +1088,6 @@
             }, { passive: true });
         })();
 
-        // ===== DISCIPLINE TAB =====
         function renderDiscipline() {
             const grid = document.getElementById('discipline-grid');
             let html = '';
